@@ -21,3 +21,5 @@ obj/
 
 # compile commands
 compile_commands.json
+
+data/session.dat
