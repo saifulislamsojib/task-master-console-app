@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug C Program",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/program",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Build C Project"
+    }
+  ]
+}

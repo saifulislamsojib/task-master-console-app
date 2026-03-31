@@ -1,0 +1,26 @@
+{
+  // Clangd configuration
+  "clangd.arguments": [
+    "--background-index",
+    "--clang-tidy",
+    "--header-insertion=iwyu",
+    "--completion-style=detailed",
+    "--function-arg-placeholders",
+    "--fallback-style=llvm"
+  ],
+
+  // Disable Microsoft C/C++ extension IntelliSense (if installed)
+  "C_Cpp.intelliSenseEngine": "disabled",
+
+  // Editor settings
+  "editor.formatOnSave": true,
+  "[c]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+  },
+
+  // File associations
+  "files.associations": {
+    "*.h": "c",
+    "*.c": "c"
+  }
+}
