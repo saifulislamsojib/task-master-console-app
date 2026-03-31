@@ -1,4 +1,4 @@
-# C Project Setup for VS Code (with clangd)
+# Task Master Console App
 
 A complete C project setup for Visual Studio Code using the clangd language server for superior code intelligence, with build, run, and debug configurations.
 
