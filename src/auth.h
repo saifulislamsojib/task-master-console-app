@@ -9,9 +9,12 @@
 #include <time.h>
 
 #ifdef _WIN32
+#include <conio.h>
+#define CLEAR "cls"
 #else
 #include <termios.h>
 #include <unistd.h>
+#define CLEAR "clear"
 #endif
 
 /* ─── Constants ─────────────────────────────────────────────── */

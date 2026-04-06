@@ -18,7 +18,7 @@ static int str_icmp(const char *a, const char *b) {
    UTILITY FUNCTIONS
    ══════════════════════════════════════════════════════════════ */
 
-void clear_screen(void) { system("clear"); }
+void clear_screen(void) { system(CLEAR); }
 
 void print_banner(void) {
   printf("\n");
