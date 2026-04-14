@@ -1,4 +1,7 @@
 #include "auth.h"
+#include "utils.h"
+#include <stdio.h>
+#include <string.h>
 
 /*
  * dashboard_placeholder – stub replaced by the full project/task

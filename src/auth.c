@@ -1,122 +1,19 @@
-#include "auth.h"
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-/* ══════════════════════════════════════════════════════════════
-   PORTABLE CASE-INSENSITIVE COMPARE
-   ══════════════════════════════════════════════════════════════ */
-static int str_icmp(const char *a, const char *b) {
-  while (*a && *b) {
-    int diff = tolower((unsigned char)*a) - tolower((unsigned char)*b);
-    if (diff)
-      return diff;
-    a++;
-    b++;
-  }
-  return tolower((unsigned char)*a) - tolower((unsigned char)*b);
-}
+#include "auth.lib.h"
+#include "auth.structure.h"
+#include "utils.h"
 
-/* ══════════════════════════════════════════════════════════════
-   UTILITY FUNCTIONS
-   ══════════════════════════════════════════════════════════════ */
-
-void clear_screen(void) { system(CLEAR); }
-
-void print_banner(void) {
-  printf("\n");
-  printf("  ╔══════════════════════════════════════════════╗\n");
-  printf("  ║                                              ║\n");
-  printf("  ║    ████████╗ █████╗ ███████╗██╗  ██╗        ║\n");
-  printf("  ║       ██╔══╝██╔══██╗██╔════╝██║ ██╔╝        ║\n");
-  printf("  ║       ██║   ███████║███████╗█████╔╝         ║\n");
-  printf("  ║       ██║   ██╔══██║╚════██║██╔═██╗         ║\n");
-  printf("  ║       ██║   ██║  ██║███████║██║  ██╗        ║\n");
-  printf("  ║       ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝        ║\n");
-  printf("  ║                                              ║\n");
-  printf("  ║      M A S T E R                            ║\n");
-  printf("  ║      Project & Task Management System       ║\n");
-  printf("  ║                                              ║\n");
-  printf("  ╚══════════════════════════════════════════════╝\n");
-  printf("\n");
-}
-
-void print_separator(void) {
-  printf("  ──────────────────────────────────────────────\n");
-}
-
-void flush_input(void) {
-  int c;
-  while ((c = getchar()) != '\n' && c != EOF)
-    ;
-}
-
-/*
- * get_masked_input – reads password char-by-char, printing '*'
- * Works on Windows (conio.h) and Linux/macOS (termios).
- */
-void get_masked_input(char *buf, int max_len) {
-  int i = 0;
-
-#ifdef _WIN32
-  char ch;
-  while ((ch = _getch()) != '\r' && i < max_len - 1) {
-    if (ch == '\b') { /* backspace */
-      if (i > 0) {
-        i--;
-        printf("\b \b");
-      }
-    } else {
-      buf[i++] = ch;
-      printf("*");
-    }
-  }
-  buf[i] = '\0';
-  printf("\n");
-#else
-  struct termios oldt, newt;
-  tcgetattr(STDIN_FILENO, &oldt);
-  newt = oldt;
-  newt.c_lflag &= ~(ECHO | ICANON); /* disable echo & line-buffering */
-  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-  char ch;
-  while (read(STDIN_FILENO, &ch, 1) == 1 && ch != '\n' && i < max_len - 1) {
-    if (ch == 127 || ch == '\b') { /* backspace / DEL */
-      if (i > 0) {
-        i--;
-        printf("\b \b");
-        fflush(stdout);
-      }
-    } else {
-      buf[i++] = ch;
-      printf("*");
-      fflush(stdout);
-    }
-  }
-  buf[i] = '\0';
-  printf("\n");
-
-  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-#endif
-}
-
-/* ══════════════════════════════════════════════════════════════
-   ENCRYPTION – Simple XOR Cipher
-   ══════════════════════════════════════════════════════════════ */
-
-void xor_encrypt(char *text, char *result, int len) {
-  for (int i = 0; i < len; i++)
-    result[i] = text[i] ^ XOR_KEY;
-  result[len] = '\0';
-}
-
-void xor_decrypt(char *cipher, char *result, int len) {
-  /* XOR is symmetric – same operation decrypts */
-  xor_encrypt(cipher, result, len);
-}
-
-/* ══════════════════════════════════════════════════════════════
-   FILE HANDLING
-   ══════════════════════════════════════════════════════════════ */
-
+// /* ─── Constants ─────────────────────────────────────────────── */
+#define MAX_USERS 100
+#define USER_DB_FILE "data/users.dat"
+#define SESSION_FILE "data/session.dat"
+#define SESSION_XOR_KEY 0x3F     /* separate XOR key for session file      */
+#define SESSION_MAGIC 0xDEADBEEF /* sentinel to detect corrupt file */
 /*
  * load_users – reads all User records from binary file.
  * Returns 1 on success, 0 if file doesn't exist yet (first run).
@@ -309,12 +206,13 @@ int is_valid_password(const char *password) {
 }
 
 /*
- * username_exists – case-insensitive duplicate check.
+ * username_exists - duplicate check.
  */
 int username_exists(User users[], int count, const char *username) {
   for (int i = 0; i < count; i++) {
-    if (str_icmp(users[i].username, username) == 0)
+    if (strcmp(users[i].username, username) == 0) {
       return 1;
+    }
   }
   return 0;
 }
@@ -461,7 +359,7 @@ int login_user(User users[], int count, Session *session) {
     /* Find matching user */
     int found = -1;
     for (int i = 0; i < count; i++) {
-      if (str_icmp(users[i].username, username) == 0) {
+      if (strcmp(users[i].username, username) == 0) {
         found = i;
         break;
       }
