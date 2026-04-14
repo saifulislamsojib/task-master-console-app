@@ -1,6 +1,5 @@
 #include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
@@ -52,21 +51,6 @@ int save_users(User users[], int count) {
   fclose(fp);
   return 1;
 }
-
-/* ══════════════════════════════════════════════════════════════
-   SESSION PERSISTENCE
-   ══════════════════════════════════════════════════════════════
-
-   Layout of session.dat (binary, all bytes XOR-encrypted):
-   ┌──────────────────────────────────────┐
-   │  unsigned int  magic        (4 B)    │  → SESSION_MAGIC
-   │  char          username    (32 B)    │
-   │  int           user_id     (4 B)     │
-   │  long          login_time  (8 B)     │  → time() at login
-   └──────────────────────────────────────┘
-   The entire struct is XOR-encrypted byte-by-byte with
-   SESSION_XOR_KEY before writing, and decrypted after reading.
-   ══════════════════════════════════════════════════════════════ */
 
 static void encrypt_session_record(SessionRecord *rec) {
   unsigned char *p = (unsigned char *)rec;
