@@ -366,14 +366,10 @@ int auth_menu(Session *session) {
     clear_screen();
     print_banner();
 
-    printf("  ┌─────────────────────────────────────────┐\n");
-    printf("  │              MAIN  MENU                 │\n");
-    printf("  ├─────────────────────────────────────────┤\n");
-    printf("  │  [1]  Register                          │\n");
-    printf("  │  [2]  Login                             │\n");
-    printf("  │  [3]  Exit                              │\n");
-    printf("  └─────────────────────────────────────────┘\n\n");
-    printf("  Enter choice: ");
+    printf("[1]  Register\n");
+    printf("[2]  Login\n");
+    printf("[3]  Exit\n");
+    printf("\n  Enter choice: ");
 
     if (scanf("%d", &choice) != 1) {
       flush_input();
