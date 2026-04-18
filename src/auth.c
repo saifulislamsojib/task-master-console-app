@@ -198,8 +198,9 @@ int register_user(User users[], int *count) {
   printf("\n  Password rules: min 6 chars, 1 uppercase, 1 digit.\n\n");
   while (1) {
     printf("  Password  : ");
-    fflush(stdout);
-    get_masked_input(password, MAX_PASSWORD_LEN);
+    if (!fgets(password, sizeof(password), stdin))
+      continue;
+    password[strcspn(password, "\n")] = '\0'; /* strip newline */
 
     if (!is_valid_password(password)) {
       printf("  [!] Password too weak. Try again.\n\n");
@@ -208,8 +209,9 @@ int register_user(User users[], int *count) {
     }
 
     printf("  Confirm   : ");
-    fflush(stdout);
-    get_masked_input(confirm, MAX_PASSWORD_LEN);
+    if (!fgets(confirm, sizeof(confirm), stdin))
+      continue;
+    confirm[strcspn(confirm, "\n")] = '\0'; /* strip newline */
 
     if (strcmp(password, confirm) != 0) {
       printf("  [!] Passwords do not match. Try again.\n\n");
@@ -288,8 +290,9 @@ int login_user(User users[], int count, Session *session) {
     username[strcspn(username, "\n")] = '\0';
 
     printf("  Password  : ");
-    fflush(stdout);
-    get_masked_input(password, MAX_PASSWORD_LEN);
+    if (!fgets(password, sizeof(password), stdin))
+      continue;
+    password[strcspn(password, "\n")] = '\0'; /* strip newline */
 
     /* Find matching user */
     int found = -1;
