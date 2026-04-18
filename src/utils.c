@@ -12,17 +12,8 @@ void clear_screen(void) { system(CLEAR); }
 void print_banner(void) {
   printf("\n");
   printf("  ╔══════════════════════════════════════════════╗\n");
-  printf("  ║                                              ║\n");
-  printf("  ║    ████████╗ █████╗ ███████╗██╗  ██╗        ║\n");
-  printf("  ║       ██╔══╝██╔══██╗██╔════╝██║ ██╔╝        ║\n");
-  printf("  ║       ██║   ███████║███████╗█████╔╝         ║\n");
-  printf("  ║       ██║   ██╔══██║╚════██║██╔═██╗         ║\n");
-  printf("  ║       ██║   ██║  ██║███████║██║  ██╗        ║\n");
-  printf("  ║       ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝        ║\n");
-  printf("  ║                                              ║\n");
-  printf("  ║      M A S T E R                            ║\n");
-  printf("  ║      Project & Task Management System       ║\n");
-  printf("  ║                                              ║\n");
+  printf("  ║      M A S T E R                             ║\n");
+  printf("  ║      Project & Task Management System        ║\n");
   printf("  ╚══════════════════════════════════════════════╝\n");
   printf("\n");
 }
