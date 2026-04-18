@@ -1,11 +1,10 @@
-#define MAX_WORKSPACE_NAME_LEN 50
-#define MAX_WORKSPACE_DESC_LEN 200
-#define MAX_WORKSPACE_CODE_LEN 10
+#define MAX_TASK_TITLE_LEN 50
+#define MAX_TASK_DESC_LEN 200
 
 typedef struct {
   int task_id;
-  char title[MAX_WORKSPACE_NAME_LEN];
-  char description[MAX_WORKSPACE_DESC_LEN];
+  char title[MAX_TASK_TITLE_LEN];
+  char description[MAX_TASK_DESC_LEN];
   char due_date[20];
   int sprint_id;
   int assigned_to;
