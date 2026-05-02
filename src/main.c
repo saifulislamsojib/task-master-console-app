@@ -1,6 +1,4 @@
 #include "dashboard.h"
-#include "utils.h"
-#include <stdio.h>
 #include <string.h>
 
 /* ─── Entry Point ─────────────────────────────────────────── */
@@ -10,11 +8,6 @@ int main(void) {
 
   /* ── Try to restore a saved session on startup ── */
   if (load_session(&session)) {
-    clear_screen();
-    print_banner();
-    print_session_info(&session);
-    flush_input();
-
     /* Jump straight to dashboard with the restored session */
     int result = dashboard(&session);
     if (result == 0)

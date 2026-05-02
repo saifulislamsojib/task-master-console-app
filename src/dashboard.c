@@ -13,18 +13,18 @@ int dashboard(Session *session) {
   print_banner();
 
   printf("  ╔══════════════════════════════════════════════╗\n");
-  printf("  ║            PROJECT  DASHBOARD               ║\n");
+  printf("  ║            PROJECT  DASHBOARD                ║\n");
   printf("  ╚══════════════════════════════════════════════╝\n\n");
 
-  printf("  Logged in as : %s\n", session->username);
-  printf("  User ID      : %d\n\n", session->user_id);
+  printf("  Username : %s\n", session->username);
+  printf("  User ID  : %d\n\n", session->user_id);
 
   printf("\n  Options:\n");
-  printf("   [1]  Join a workspace\n");
-  printf("   [2]  Create a workspace\n");
-  printf("   [3]  View your workspaces\n");
-  printf("   [4]  Logout\n");
-  printf("   [5]  Exit  (session saved – restored on next run)\n\n");
+  printf("   [1] Join a workspace\n");
+  printf("   [2] Create a workspace\n");
+  printf("   [3] View your workspaces\n");
+  printf("   [4] Logout\n");
+  printf("   [5] Exit (session saved - restored on next run)\n\n");
   printf("  Enter choice: ");
   fflush(stdout);
 

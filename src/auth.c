@@ -87,18 +87,6 @@ int load_session(Session *session) {
 void clear_session_file(void) { remove(SESSION_FILE); }
 
 /*
- * print_session_info – shows restored-session banner.
- */
-void print_session_info(const Session *session) {
-  print_separator();
-  printf("\n  ✔  Session restored!\n");
-  printf("     User     : %s\n", session->username);
-  printf("     ID       : %d\n", session->user_id);
-  print_separator();
-  printf("\n  Press ENTER to continue to dashboard...");
-}
-
-/*
  * is_valid_username
  *   - 3 to MAX_USERNAME_LEN-1 chars
  *   - Only letters, digits, and underscores
