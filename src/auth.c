@@ -331,10 +331,6 @@ int login_user(User users[], int count, Session *session) {
   return 0;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   MAIN AUTHENTICATION MENU
-   ══════════════════════════════════════════════════════════════ */
-
 /*
  * auth_menu – drives the pre-login loop.
  *

@@ -1,7 +1,3 @@
-/* ══════════════════════════════════════════════════════════════
-   ENCRYPTION – Simple XOR Cipher
-   ══════════════════════════════════════════════════════════════ */
-
 #define XOR_KEY 0x5A /* simple XOR cipher key for passwords   */
 
 void xor_encrypt(char *text, char *result, int len) {
