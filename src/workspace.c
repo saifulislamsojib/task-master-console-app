@@ -181,18 +181,23 @@ int view_workspaces(Workspace *workspace, int user_id) {
     printf("You are not a member of any workspace!\n");
     return 0;
   } else {
+    printf("[0] Back\n");
     printf("Enter workspace ID to view: ");
     int workspace_id;
-    if (scanf("%d", &workspace_id)) {
-      for (int i = 0; i <= workspace_index; i++) {
-        if (workspaces[i].id == workspace_id) {
-          *workspace = workspaces[i];
-          return 1;
-        }
-      }
-      printf("Workspace not found! Press ENTER to try again.\n");
-      flush_input();
+    scanf("%d", &workspace_id);
+    if (workspace_id == 0) {
+      return 0;
     }
+    for (int i = 0; i <= workspace_index; i++) {
+      if (workspaces[i].id == workspace_id) {
+        *workspace = workspaces[i];
+        return 1;
+      }
+    }
+    flush_input();
+    printf("Workspace not found!\n");
+    printf("Press Enter to try again\n");
+    flush_input();
     return view_workspaces(workspace, user_id);
   }
 }
