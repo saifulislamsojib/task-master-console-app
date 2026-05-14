@@ -1,10 +1,12 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "auth.lib.h"
 #include "auth.structure.h"
 #include "utils.h"
+#include "workspace.structure.h"
 
 // /* ─── Constants ─────────────────────────────────────────────── */
 #define MAX_USERS 100
@@ -412,4 +414,36 @@ int get_username(char *username, int user_id) {
   }
   fclose(fp);
   return 0;
+}
+
+int get_usernames_by_ids(char *usernames[], int user_ids[], int *count) {
+  FILE *fp = fopen(USER_DB_FILE, "rb");
+  if (fp == NULL) {
+    printf("Error opening user file!\n");
+    return 0;
+  }
+  User user;
+  *count = 0;
+  while (fread(&user, sizeof(User), 1, fp)) {
+    if (*count == MAX_WORKSPACE_MEMBERS_COUNT) {
+      break;
+    }
+    for (int i = 0; i < MAX_WORKSPACE_MEMBERS_COUNT; i++) {
+      if (user_ids[i] == 0) {
+        break;
+      }
+      if (user_ids[i] == user.user_id) {
+        usernames[i] = (char *)malloc(MAX_USERNAME_LEN * sizeof(char));
+        if (usernames[i] == NULL) {
+          printf("Error allocating memory for username!\n");
+          return 0;
+        }
+        strncpy(usernames[i], user.username, MAX_USERNAME_LEN - 1);
+        (*count)++;
+        break;
+      }
+    }
+  }
+  fclose(fp);
+  return 1;
 }

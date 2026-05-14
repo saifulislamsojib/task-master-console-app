@@ -1,7 +1,7 @@
 #include "auth.h"
 #include "sprint.h"
+#include "task.h"
 #include "utils.h"
-#include "workspace.structure.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -49,17 +49,12 @@ int Owner_Dashboard(Workspace *workspace, int user_id, Sprint *sprint) {
   int no_sprint = sprint->id == 0;
   if (no_sprint) {
     printf("  [1] Create Sprint\n");
-    printf("  [2] View All Sprints\n");
-    printf("  [3] View All Tasks\n");
-    printf("  [4] View My All Tasks\n");
   } else {
     printf("  [1] Create Task\n");
-    printf("  [2] View All Sprints\n");
-    printf("  [3] View All Tasks\n");
-    printf("  [4] View My All Tasks\n");
-    printf("  [5] View All Tasks In Current Sprint\n");
-    printf("  [6] View My Tasks In Current Sprint\n");
   }
+  printf("  [2] View All Sprints\n");
+  printf("  [3] View All Tasks\n");
+  printf("  [4] View My All Tasks\n");
   printf("  [0] Back to Main Menu\n");
   printf("\n");
   int choice;
@@ -74,9 +69,14 @@ int Owner_Dashboard(Workspace *workspace, int user_id, Sprint *sprint) {
       create_sprint(sprint, workspace->id);
       return workspace_dashboard(workspace, user_id);
     } else {
-      // create_task(workspace, user_id);
+      if (create_task(workspace->id, sprint->id, user_id)) {
+        return Owner_Dashboard(workspace, user_id, sprint);
+      }
+      printf("\n  [ERROR] Failed to create task.\n");
+      printf("\n  Press ENTER to continue...");
+      flush_input();
+      return Owner_Dashboard(workspace, user_id, sprint);
     }
-    break;
   case 2:
     view_sprints(sprint, workspace->id, 1);
     break;
@@ -85,15 +85,6 @@ int Owner_Dashboard(Workspace *workspace, int user_id, Sprint *sprint) {
   //   break;
   // case 4:
   //   view_all_tasks(workspace);
-  //   break;
-  // case 5:
-  //   create_task(workspace, user_id);
-  //   break;
-  // case 6:
-  //   view_my_tasks_current_sprint(workspace, user_id);
-  //   break;
-  // case 7:
-  //   view_my_all_tasks(workspace, user_id);
   //   break;
   default:
     printf("  [ERROR] Invalid option.\n");

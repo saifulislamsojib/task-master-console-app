@@ -23,6 +23,53 @@ int generate_sprint_id() {
   return max_id + 1;
 }
 
+int create_sprint(Sprint *sprint, int workspace_id) {
+  FILE *fp = fopen(SPRINT_FILE, "ab");
+  if (fp == NULL) {
+    printf("Error opening sprint file!\n");
+    return 0;
+  }
+
+  memset(sprint, 0, sizeof(Sprint));
+
+  printf("Enter sprint name: ");
+  fgets(sprint->name, sizeof(sprint->name), stdin);
+  sprint->name[strcspn(sprint->name, "\n")] = 0;
+
+  printf("Enter sprint description: ");
+  fgets(sprint->description, sizeof(sprint->description), stdin);
+  sprint->description[strcspn(sprint->description, "\n")] = 0;
+
+  printf("Enter start date (DD/MM/YYYY): ");
+  fgets(sprint->start_date, sizeof(sprint->start_date), stdin);
+  sprint->start_date[strcspn(sprint->start_date, "\n")] = 0;
+
+  flush_input();
+
+  printf("Enter end date (DD/MM/YYYY): ");
+  fgets(sprint->end_date, sizeof(sprint->end_date), stdin);
+  sprint->end_date[strcspn(sprint->end_date, "\n")] = 0;
+
+  flush_input();
+
+  if (is_valid_date_formate(sprint->start_date) == 0 ||
+      is_valid_date_formate(sprint->end_date) == 0) {
+    printf("Invalid date format! (DD/MM/YYYY)\n");
+    printf("Press Enter to try again\n");
+    flush_input();
+    return create_sprint(sprint, workspace_id);
+  }
+
+  sprint->id = generate_sprint_id();
+  sprint->workspace_id = workspace_id;
+
+  fwrite(sprint, sizeof(Sprint), 1, fp);
+  fclose(fp);
+
+  printf("\n  [SUCCESS] Sprint created successfully!\n");
+  return 1;
+}
+
 int update_sprint(Sprint *sprint) {
   printf("[1] Sprint Name: %s\n", sprint->name);
   printf("[2] Sprint Description: %s\n", sprint->description);
@@ -54,11 +101,29 @@ int update_sprint(Sprint *sprint) {
     printf("Enter new sprint start date (DD/MM/YYYY): ");
     fgets(sprint->start_date, sizeof(sprint->start_date), stdin);
     sprint->start_date[strcspn(sprint->start_date, "\n")] = 0;
+
+    flush_input();
+
+    if (is_valid_date_formate(sprint->start_date) == 0) {
+      printf("Invalid date format! (DD/MM/YYYY)\n");
+      printf("Press Enter to try again\n");
+      flush_input();
+      return update_sprint(sprint);
+    }
     break;
   case 4:
     printf("Enter new sprint end date (DD/MM/YYYY): ");
     fgets(sprint->end_date, sizeof(sprint->end_date), stdin);
     sprint->end_date[strcspn(sprint->end_date, "\n")] = 0;
+
+    flush_input();
+
+    if (is_valid_date_formate(sprint->end_date) == 0) {
+      printf("Invalid date format! (DD/MM/YYYY)\n");
+      printf("Press Enter to try again\n");
+      flush_input();
+      return update_sprint(sprint);
+    }
     break;
   default:
     printf("Invalid choice!\n");
@@ -70,7 +135,6 @@ int update_sprint(Sprint *sprint) {
   FILE *fp = fopen(SPRINT_FILE, "rb+");
 
   if (fp == NULL) {
-    fclose(fp);
     printf("Error opening sprint file!\n");
     printf("Press Enter to go back\n");
     flush_input();
@@ -93,45 +157,6 @@ int update_sprint(Sprint *sprint) {
   printf("Press Enter to go back\n");
   flush_input();
   return 0;
-}
-
-int create_sprint(Sprint *sprint, int workspace_id) {
-  FILE *fp = fopen(SPRINT_FILE, "ab");
-  if (fp == NULL) {
-    printf("Error opening sprint file!\n");
-    return 0;
-  }
-
-  memset(sprint, 0, sizeof(Sprint));
-
-  printf("Enter sprint name: ");
-  fgets(sprint->name, sizeof(sprint->name), stdin);
-  sprint->name[strcspn(sprint->name, "\n")] = 0;
-
-  printf("Enter sprint description: ");
-  fgets(sprint->description, sizeof(sprint->description), stdin);
-  sprint->description[strcspn(sprint->description, "\n")] = 0;
-
-  printf("Enter start date (DD/MM/YYYY): ");
-  fgets(sprint->start_date, sizeof(sprint->start_date), stdin);
-  sprint->start_date[strcspn(sprint->start_date, "\n")] = 0;
-
-  flush_input();
-
-  printf("Enter end date (DD/MM/YYYY): ");
-  fgets(sprint->end_date, sizeof(sprint->end_date), stdin);
-  sprint->end_date[strcspn(sprint->end_date, "\n")] = 0;
-
-  flush_input();
-
-  sprint->id = generate_sprint_id();
-  sprint->workspace_id = workspace_id;
-
-  fwrite(sprint, sizeof(Sprint), 1, fp);
-  fclose(fp);
-
-  printf("\n  [SUCCESS] Sprint created successfully!\n");
-  return 1;
 }
 
 int view_sprints(Sprint *sprint, int workspace_id, int is_edit) {

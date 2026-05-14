@@ -1,2 +1,8 @@
 - Login, Register Rate Limiting
 - Leave Workspace, Remover Member by Owner
+- Now only Owner can manage task, so we need to add another role
+  - Manager(for manage task)
+- TASK TAG
+- Multiple members assign in a task
+- Sub-task
+- Task time tracking
