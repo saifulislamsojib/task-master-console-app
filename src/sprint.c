@@ -159,7 +159,8 @@ int update_sprint(Sprint *sprint) {
   return 0;
 }
 
-int view_sprints(Sprint *sprint, int workspace_id, int is_edit) {
+int view_sprints(int workspace_id, int is_edit) {
+  Sprint *sprint = NULL;
   FILE *fp = fopen(SPRINT_FILE, "rb");
   if (fp == NULL) {
     printf("Error opening sprint file!\n");
@@ -200,7 +201,7 @@ int view_sprints(Sprint *sprint, int workspace_id, int is_edit) {
     printf("Invalid sprint id!\n");
     printf("Press Enter to try again\n");
     flush_input();
-    return view_sprints(sprint, workspace_id, is_edit);
+    return view_sprints(workspace_id, is_edit);
   }
   flush_input();
   printf("Press Enter to go back\n");

@@ -7,41 +7,38 @@
 
 int workspace_dashboard(Workspace *workspace, int user_id);
 
-int Member_Dashboard(Workspace *workspace, int user_id,
-                     Sprint *current_sprint) {
+int Member_Dashboard(Workspace *workspace, int user_id, Sprint *sprint) {
   printf("\n");
-  printf("  1. View My Tasks In Current Sprint\n");
-  printf("  2. View My All Tasks\n");
-  printf("  3. View All Tasks In Current Sprint\n");
-  printf("  4. View All Sprints\n");
-  printf("  5. Back to Main Menu\n");
+  printf("  [1] View My Tasks\n");
+  printf("  [2] View All Tasks\n");
+  printf("  [3] View All Sprints\n");
+  printf("  [0] Back\n");
   printf("\n");
+
   int choice;
   printf("  Choose an option: ");
   scanf("%d", &choice);
   flush_input();
-  // switch (choice) {
-  // case 1:
-  //   view_my_tasks_current_sprint(workspace, user_id);
-  //   break;
-  // case 2:
-  //   view_my_all_tasks(workspace, user_id);
-  //   break;
-  // case 3:
-  //   view_all_tasks_current_sprint(workspace);
-  //   break;
-  // case 4:
-  //   view_all_sprints(workspace);
-  //   break;
-  // case 5:
-  //   return 0; /* Exit */
-  // default:
-  //   printf("  [ERROR] Invalid option.\n");
-  //   printf("\n  Press ENTER to try again...");
-  //   flush_input();
-  //   return Member_Dashboard(workspace, user_id);
-  // }
-  return choice;
+
+  switch (choice) {
+  case 0:
+    return 0;
+  case 1:
+    view_my_tasks(workspace->id, user_id, workspace->member_ids);
+    break;
+  case 2:
+    view_all_tasks(workspace->id, workspace->member_ids, 0);
+    break;
+  case 3:
+    view_sprints(workspace->id, 0);
+    break;
+  default:
+    printf("  [ERROR] Invalid option.\n");
+    printf("\n  Press ENTER to try again...\n");
+    flush_input();
+    return Member_Dashboard(workspace, user_id, sprint);
+  }
+  return Member_Dashboard(workspace, user_id, sprint);
 }
 
 int Owner_Dashboard(Workspace *workspace, int user_id, Sprint *sprint) {
@@ -78,14 +75,14 @@ int Owner_Dashboard(Workspace *workspace, int user_id, Sprint *sprint) {
       return Owner_Dashboard(workspace, user_id, sprint);
     }
   case 2:
-    view_sprints(sprint, workspace->id, 1);
+    view_sprints(workspace->id, 1);
     break;
-  // case 3:
-  //   view_all_tasks_current_sprint(workspace);
-  //   break;
-  // case 4:
-  //   view_all_tasks(workspace);
-  //   break;
+  case 3:
+    view_all_tasks(workspace->id, workspace->member_ids, 1);
+    break;
+  case 4:
+    view_my_tasks(workspace->id, user_id, workspace->member_ids);
+    break;
   default:
     printf("  [ERROR] Invalid option.\n");
     printf("\n  Press ENTER to try again...\n");

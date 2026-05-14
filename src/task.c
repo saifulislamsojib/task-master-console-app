@@ -30,7 +30,7 @@ int generate_task_id() {
   return max_id + 1;
 }
 
-void view_task(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
+void view_task(Task *task) {
   printf("[1] Task Title: %s\n", task->title);
   printf("[2] Task Description: %s\n", task->description);
   printf("[3] Task Due Date: %s\n", task->due_date);
@@ -44,15 +44,15 @@ void view_task(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
   printf("[5] Task Priority: %s\n", task_priority[task->priority]);
   printf("[6] Task Status: %s\n", task_status[task->status]);
 
-  printf("[7] Task Tags: ");
-  for (int i = 0; i < 5; i++) {
-    printf("%s ", task->tags[i]);
-  }
+  // printf("[7] Task Tags: ");
+  // for (int i = 0; i < 5; i++) {
+  //   printf("%s ", task->tags[i]);
+  // }
   printf("\n");
 }
 
 int update_task(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
-  view_task(task, member_ids);
+  view_task(task);
   printf("[0] Back\n");
 
   printf("Enter your choice to update: ");
@@ -137,10 +137,11 @@ int update_task(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
     task->priority--;
     break;
   case 6:
-    printf("Enter new task status (1-6): ");
+    printf("\n[Task Status]\n");
     for (int i = 0; i < 6; i++) {
       printf("  %d. %s\n", i + 1, task_status[i]);
     }
+    printf("Enter new task status (1-6): ");
     scanf("%d", &task->status);
     if (task->status < 1 || task->status > 6) {
       printf("Invalid status!\n");
@@ -150,17 +151,17 @@ int update_task(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
     }
     task->status--;
     break;
-  case 7:
-    printf("Enter new task tags (one by one, enter blank to stop): \n");
-    for (int i = 0; i < 5; i++) {
-      printf("  %d. ", i + 1);
-      fgets(task->tags[i], sizeof(task->tags[i]), stdin);
-      task->tags[i][strcspn(task->tags[i], "\n")] = 0;
-      if (strlen(task->tags[i]) == 0) {
-        break;
-      }
-    }
-    break;
+  // case 7:
+  //   printf("Enter new task tags (one by one, enter blank to stop): \n");
+  //   for (int i = 0; i < 5; i++) {
+  //     printf("  %d. ", i + 1);
+  //     fgets(task->tags[i], sizeof(task->tags[i]), stdin);
+  //     task->tags[i][strcspn(task->tags[i], "\n")] = 0;
+  //     if (strlen(task->tags[i]) == 0) {
+  //       break;
+  //     }
+  //   }
+  //   break;
   default:
     printf("Invalid choice!\n");
     printf("Press Enter to try again\n");
@@ -261,15 +262,15 @@ int create_task(int workspace_id, int sprint_id, int user_id) {
 
   flush_input();
 
-  printf("Enter task tags (one by one, enter blank to stop): \n");
-  for (int i = 0; i < 5; i++) {
-    printf("  %d. ", i + 1);
-    fgets(task.tags[i], sizeof(task.tags[i]), stdin);
-    task.tags[i][strcspn(task.tags[i], "\n")] = 0;
-    if (strlen(task.tags[i]) == 0) {
-      break;
-    }
-  }
+  // printf("Enter task tags (one by one, enter blank to stop): \n");
+  // for (int i = 0; i < 5; i++) {
+  //   printf("  %d. ", i + 1);
+  //   fgets(task.tags[i], sizeof(task.tags[i]), stdin);
+  //   task.tags[i][strcspn(task.tags[i], "\n")] = 0;
+  //   if (strlen(task.tags[i]) == 0) {
+  //     break;
+  //   }
+  // }
 
   task.id = generate_task_id();
   task.workspace_id = workspace_id;
@@ -290,7 +291,7 @@ int create_task(int workspace_id, int sprint_id, int user_id) {
 }
 
 int update_task_user(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
-  view_task(task, member_ids);
+  view_task(task);
 
   print_separator();
 
@@ -298,6 +299,8 @@ int update_task_user(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
   printf("  [0] Back\n");
 
   int choice;
+  printf("\n");
+  printf("Choose an option: ");
   scanf("%d", &choice);
   flush_input();
 
@@ -306,10 +309,11 @@ int update_task_user(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
   }
 
   if (choice == 1) {
-    printf("Enter new task status (1-6): ");
+    printf("\n[Task Status]\n");
     for (int i = 0; i < 6; i++) {
       printf("  %d. %s\n", i + 1, task_status[i]);
     }
+    printf("Enter new task status (1-6): ");
     scanf("%d", &task->status);
     if (task->status < 1 || task->status > 6) {
       printf("Invalid status!\n");
@@ -350,26 +354,120 @@ int update_task_user(Task *task, int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
   return update_task_user(task, member_ids);
 }
 
-int view_my_tasks(int user_id) {
+int view_my_tasks(int workspace_id, int user_id,
+                  int member_ids[MAX_WORKSPACE_MEMBERS_COUNT]) {
   FILE *fp = fopen(TASK_FILE, "rb");
   if (fp == NULL) {
     printf("Error opening task file!\n");
     return 0;
   }
 
-  Task task;
-  int found = 0;
-  while (fread(&task, sizeof(Task), 1, fp)) {
-    if (task.assigned_to == user_id) {
-      view_task(&task, NULL);
-      found = 1;
+  Task tasks[100];
+  int index = 0;
+  while (fread(&tasks[index], sizeof(Task), 1, fp)) {
+    if (tasks[index].workspace_id == workspace_id &&
+        tasks[index].assigned_to == user_id) {
+      index++;
     }
   }
   fclose(fp);
 
-  if (!found) {
+  if (index == 0) {
     printf("No tasks assigned to you!\n");
+    printf("Press Enter to go back\n");
+    flush_input();
+    return 0;
   }
 
-  return found;
+  printf("\n=================================================\n");
+  printf("%-5s %-20s %-10s %-10s %-10s\n", "ID", "Title", "Priority", "Status",
+         "Due Date");
+  printf("=================================================\n");
+
+  for (int i = 0; i < index; i++) {
+    printf("%-5d %-20s %-10s %-10s %-10s\n", tasks[i].id, tasks[i].title,
+           task_priority[tasks[i].priority], task_status[tasks[i].status],
+           tasks[i].due_date);
+  }
+
+  printf("[0] Back\n");
+
+  printf("\n  Please Enter task id for more details or edit: ");
+  int task_id;
+  scanf("%d", &task_id);
+
+  if (task_id == 0) {
+    return 0;
+  }
+
+  for (int i = 0; i < index; i++) {
+    if (tasks[i].id == task_id) {
+      return update_task_user(&tasks[i], member_ids);
+    }
+  }
+  printf("Task not found by the given id!\n");
+  printf("Press Enter to try again\n");
+  flush_input();
+  return view_my_tasks(workspace_id, user_id, member_ids);
+}
+
+int view_all_tasks(int workspace_id,
+                   int member_ids[MAX_WORKSPACE_MEMBERS_COUNT], int is_edit) {
+  FILE *fp = fopen(TASK_FILE, "rb");
+  if (fp == NULL) {
+    printf("Error opening task file!\n");
+    return 0;
+  }
+
+  Task tasks[100];
+  int index = 0;
+  while (fread(&tasks[index], sizeof(Task), 1, fp)) {
+    if (tasks[index].workspace_id == workspace_id) {
+      index++;
+    }
+  }
+  fclose(fp);
+
+  if (index == 0) {
+    printf("No tasks found!\n");
+    printf("Press Enter to go back\n");
+    flush_input();
+    return 0;
+  }
+
+  printf("\n=================================================\n");
+  printf("%-5s %-20s %-10s %-10s %-10s\n", "ID", "Title", "Priority", "Status",
+         "Due Date");
+  printf("=================================================\n");
+
+  for (int i = 0; i < index; i++) {
+    printf("%-5d %-20s %-10s %-10s %-10s\n", tasks[i].id, tasks[i].title,
+           task_priority[tasks[i].priority], task_status[tasks[i].status],
+           tasks[i].due_date);
+  }
+
+  if (is_edit) {
+    printf("[0] Back\n");
+    printf("\n  Please Enter task id for more details or edit: ");
+    int task_id;
+    scanf("%d", &task_id);
+
+    if (task_id == 0) {
+      return 0;
+    }
+
+    for (int i = 0; i < index; i++) {
+      if (tasks[i].id == task_id) {
+        return update_task(&tasks[i], member_ids);
+      }
+    }
+    printf("Task not found by the given id!\n");
+    printf("Press Enter to try again\n");
+    flush_input();
+    return view_all_tasks(workspace_id, member_ids, 1);
+  }
+
+  printf("Press Enter to go back\n");
+  flush_input();
+  return 0;
 }
