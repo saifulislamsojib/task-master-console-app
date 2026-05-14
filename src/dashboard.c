@@ -15,7 +15,7 @@ int dashboard(Session *session) {
   print_banner();
 
   printf("  ╔══════════════════════════════════════════════╗\n");
-  printf("  ║            PROJECT  DASHBOARD                ║\n");
+  printf("  ║                  DASHBOARD                   ║\n");
   printf("  ╚══════════════════════════════════════════════╝\n\n");
 
   printf("  Username : %s\n", session->username);
@@ -76,5 +76,9 @@ int dashboard(Session *session) {
     return dashboard(session);
   }
 
-  return workspace_dashboard(&workspace, session->user_id);
+  choice = workspace_dashboard(&workspace, session->user_id);
+  if (choice == 1) {
+    return dashboard(session);
+  }
+  return 0;
 }

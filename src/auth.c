@@ -395,3 +395,21 @@ int auth_menu(Session *session) {
     }
   }
 }
+
+int get_username(char *username, int user_id) {
+  FILE *fp = fopen(USER_DB_FILE, "rb");
+  if (fp == NULL) {
+    printf("Error opening user file!\n");
+    return 0;
+  }
+  User user;
+  while (fread(&user, sizeof(User), 1, fp)) {
+    if (user.user_id == user_id) {
+      strcpy(username, user.username);
+      fclose(fp);
+      return 1;
+    }
+  }
+  fclose(fp);
+  return 0;
+}

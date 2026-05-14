@@ -6,3 +6,5 @@ void clear_session_file(void);
 
 /* Main Auth Menu */
 int auth_menu(Session *session);
+
+void get_username(char *username, int user_id);

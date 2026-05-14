@@ -1,1 +1,2 @@
 - Login, Register Rate Limiting
+- Leave Workspace, Remover Member by Owner

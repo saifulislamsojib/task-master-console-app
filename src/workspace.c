@@ -93,8 +93,6 @@ int create_workspace(Workspace *workspace, int user_id) {
   workspace->owner_id = user_id;
   workspace->member_ids[0] = user_id;
 
-  printf("workspace->member_ids[0] is = %d\n", workspace->member_ids[0]);
-
   fwrite(workspace, sizeof(Workspace), 1, fp);
   fclose(fp);
 
@@ -134,7 +132,12 @@ int join_workspace(Workspace *workspace, int user_id) {
         }
         if (workspace->member_ids[i] == 0) {
           workspace->member_ids[i] = user_id;
+
+          /* move back to current record position */
+          fseek(fp, -sizeof(Workspace), SEEK_CUR);
+
           fwrite(workspace, sizeof(Workspace), 1, fp);
+          fflush(fp);
           fclose(fp);
           printf("Workspace joined successfully!\n");
           return 1;
