@@ -109,6 +109,8 @@ int is_valid_username(const char *username) {
  *   - 6 to MAX_PASSWORD_LEN-1 chars
  *   - At least one digit
  *   - At least one uppercase letter
+ *   - At least one lowercase letter
+ *   - At least one special character
  */
 int is_valid_password(const char *password) {
   int len = (int)strlen(password);
@@ -117,14 +119,21 @@ int is_valid_password(const char *password) {
 
   int has_digit = 0;
   int has_upper = 0;
+  int has_lower = 0;
+  int has_special = 0;
 
   for (int i = 0; i < len; i++) {
-    if (isdigit((unsigned char)password[i]))
+    char pass = (unsigned char)password[i];
+    if (isdigit(pass))
       has_digit = 1;
-    if (isupper((unsigned char)password[i]))
+    if (isupper(pass))
       has_upper = 1;
+    if (islower(pass))
+      has_lower = 1;
+    if (ispunct(pass))
+      has_special = 1;
   }
-  return has_digit && has_upper;
+  return has_digit && has_upper && has_lower && has_special;
 }
 
 /*
@@ -182,7 +191,8 @@ int register_user(User users[], int *count) {
   }
 
   /* ── Password ── */
-  printf("\n  Password rules: min 6 chars, 1 uppercase, 1 digit.\n\n");
+  printf("\n  Password rules: min 6 chars, 1 uppercase, 1 lower, 1 special "
+         "char and 1 digit.\n\n");
   while (1) {
     printf("  Password  : ");
     if (!fgets(password, sizeof(password), stdin))

@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <time.h>
 
 #define WORKSPACE_FILE "data/workspaces.dat"
 #define MAX_USER_WORKSPACES 100
@@ -110,7 +109,7 @@ int join_workspace(Workspace *workspace, int user_id) {
     return 0;
   }
 
-  FILE *fp = fopen(WORKSPACE_FILE, "rb");
+  FILE *fp = fopen(WORKSPACE_FILE, "rb+");
   if (fp == NULL) {
     printf("No workspaces found!\n");
     return 0;
