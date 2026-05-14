@@ -226,10 +226,12 @@ void get_current_sprint(Sprint *sprint, int workspace_id) {
   char current_date[10];
   get_current_date(current_date);
 
-  while (fread(sprint, sizeof(Sprint), 1, fp)) {
-    if (sprint->workspace_id == workspace_id) {
-      if (strcmp(sprint->start_date, current_date) <= 0 &&
-          strcmp(sprint->end_date, current_date) >= 0) {
+  Sprint temp_sprint;
+  while (fread(&temp_sprint, sizeof(Sprint), 1, fp)) {
+    if (temp_sprint.workspace_id == workspace_id) {
+      if (strcmp(temp_sprint.start_date, current_date) <= 0 &&
+          strcmp(temp_sprint.end_date, current_date) >= 0) {
+        *sprint = temp_sprint;
         return;
       }
     }

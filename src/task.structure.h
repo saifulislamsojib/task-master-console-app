@@ -5,7 +5,7 @@ typedef struct {
   int id;
   char title[MAX_TASK_TITLE_LEN];
   char description[MAX_TASK_DESC_LEN];
-  char due_date[11]; // dd-mm-yyyy
+  char due_date[11]; // dd/mm/yyyy
   int status;
   int priority;
   int created_by;
